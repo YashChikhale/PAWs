@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Contact Us - Pet Adoption</title>
+  <link rel="stylesheet" href="contact.css">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+  <header>
+    <h1>Contact Us</h1>
+  </header>
+  <div class="container">
+    <section class="contact-section">
+      <h2>We will Love to Hear from You</h2>
+      <div class="contact-info">
+        <div class="info">
+          <i class="fas fa-phone"></i>
+          <p>+91-022-12365-23</p>
+        </div>
+        <div class="info">
+          <i class="fas fa-envelope"></i>
+          <p>pawsofcuties@gmail.com</p>
+        </div>
+        <div class="info">
+          <i class="fas fa-map-marker-alt"></i>
+          <p>123 RB Lane, R-City, Mumbai-400036</p>
+        </div>
+      </div>
+      <form id="contactForm">
+        <input type="text" name="name" id="name" placeholder="Your Name" required>
+        <input type="email" name="email" id="email" placeholder="Your Email" required>
+        <textarea name="message" id="message" placeholder="Your Message" rows="5" required></textarea>
+        <button type="submit">Send Message</button>
+      </form>
+      <div id="responseMessage" style="display:none; margin-top:10px;"></div>
+    </section>
+  </div>
+  <footer>
+    <p>&copy; 2025 PAWs | <a href="#privacy-policy">Privacy Policy</a></p>
+  </footer>
+
+  <script>
+    const form = document.getElementById('contactForm');
+    const responseMessage = document.getElementById('responseMessage');
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      const name = document.getElementById('name').value;
+      const email = document.getElementById('email').value;
+      const message = document.getElementById('message').value;
+
+      try {
+        const response = await fetch('http://localhost:8000/api/contact/contactuser', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ userName: name, email, description: message }),
+        });
+
+        const data = await response.json();
+
+        if (data.success) {
+          responseMessage.style.color = 'green';
+          responseMessage.textContent = data.message;
+        } else {
+          responseMessage.style.color = 'red';
+          responseMessage.textContent = 'Failed to send message. Please try again later.';
+        }
+      } catch (error) {
+        responseMessage.style.color = 'red';
+        responseMessage.textContent = 'An error occurred while sending the message.';
+        console.error('Error:', error);
+      }
+
+      responseMessage.style.display = 'block';
+    });
+  </script>
+</body>
+</html>
